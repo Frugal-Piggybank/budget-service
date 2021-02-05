@@ -1,17 +1,30 @@
-import { AzureFunction, Context, HttpRequest } from "@azure/functions"
+import { ApolloServer } from 'apollo-server-azure-functions';
+import admin from 'firebase-admin';
+import typeDefs from './schema';
+import resolvers from './resolvers';
 
-const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
-    context.log('HTTP trigger function processed a request.');
-    const name = (req.query.name || (req.body && req.body.name));
-    const responseMessage = name
-        ? "Hello, " + name + ". This HTTP triggered function executed successfully."
-        : "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response.";
+import config from './firebase-config';
 
-    context.res = {
-        // status: 200, /* Defaults to 200 */
-        body: responseMessage
-    };
+// const typeDefs = gql`
+//   type Query {
+//     hello: String
+//   }
+// `;
 
-};
+// const resolvers = {
+//   Query: {
+//     hello: () => 'Hellow world!',
+//   },
+// };
 
-export default httpTrigger;
+const adminConfig = JSON.stringify(config);
+
+admin.initializeApp({
+  credential: admin.credential.cert(JSON.parse(adminConfig)),
+});
+
+const server = new ApolloServer({ typeDefs, resolvers });
+const fireStore = admin.firestore();
+
+exports.run = server.createHandler();
+export { fireStore };

@@ -1,26 +1,16 @@
 import { ApolloServer } from 'apollo-server-azure-functions';
-import admin from 'firebase-admin';
+import admin, { ServiceAccount } from 'firebase-admin';
 import typeDefs from './schema';
 import resolvers from './resolvers';
 
-import config from './firebase-config';
-
-// const typeDefs = gql`
-//   type Query {
-//     hello: String
-//   }
-// `;
-
-// const resolvers = {
-//   Query: {
-//     hello: () => 'Hellow world!',
-//   },
-// };
-
-const adminConfig = JSON.stringify(config);
+const config: ServiceAccount = {
+  projectId: process.env['FIREBASE_PROJECT_ID'],
+  clientEmail: process.env['FIREBASE_CLIENT_EMAIL'],
+  privateKey: process.env['FIREBASE_PRIVATE_KEY'],
+};
 
 admin.initializeApp({
-  credential: admin.credential.cert(JSON.parse(adminConfig)),
+  credential: admin.credential.cert(config),
 });
 
 const server = new ApolloServer({ typeDefs, resolvers });

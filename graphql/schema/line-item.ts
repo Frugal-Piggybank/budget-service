@@ -19,6 +19,7 @@ export const typeDef = gql`
     date: Date!
   }
   extend type Mutation {
+    createLineItem: Boolean
     upsertLineItem(lineItem: UpsertLineItemInput!): LineItem!
     deleteLineItem(id: ID!): Boolean
   }

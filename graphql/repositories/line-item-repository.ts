@@ -10,6 +10,7 @@ export const getAsync = async (): Promise<any> => {
       .collection(COLLECTION)
       .withConverter(lineItemConverter)
       .get();
+
     const lineItems = snapshot.docs.map((doc) => doc.data());
 
     return lineItems;

@@ -16,5 +16,7 @@ admin.initializeApp({
 const server = new ApolloServer({ typeDefs, resolvers });
 const fireStore = admin.firestore();
 
+fireStore.settings({ ignoreUndefinedProperties: true });
+
 exports.run = server.createHandler();
 export { fireStore };

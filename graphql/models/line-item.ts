@@ -19,12 +19,11 @@ export const lineItemConverter: FirestoreDataConverter<LineItem> = {
 
   toFirestore: (lineItem: LineItem): DocumentData => {
     return {
-      //   _id: lineItem.id,
       title: lineItem.title,
       description: lineItem.description,
-      isSavings: lineItem.isSavings ?? false,
-      category: lineItem.category ?? '',
-      amount: lineItem.amount ?? 0,
+      isSavings: lineItem.isSavings,
+      category: lineItem.category,
+      amount: lineItem.amount,
       date: lineItem.date,
     };
   },

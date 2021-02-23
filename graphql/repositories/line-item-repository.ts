@@ -1,10 +1,15 @@
 import { fireStore } from '../index';
+import { lineItemConverter, LineItem } from './../models/line-item';
+// import { LineItem } from '../models/line-item';
 
 const COLLECTION = 'line-items';
 
 export const getAsync = async (): Promise<any> => {
   try {
-    const snapshot = await fireStore.collection(COLLECTION).get();
+    const snapshot = await fireStore
+      .collection(COLLECTION)
+      .withConverter(lineItemConverter)
+      .get();
     const lineItems = snapshot.docs.map((doc) => doc.data());
 
     return lineItems;
@@ -13,12 +18,11 @@ export const getAsync = async (): Promise<any> => {
   }
 };
 
-export const createAsync = async (): Promise<void> => {
-  fireStore.collection(COLLECTION).add({
-    title: 'Water',
-    description: 'This is my water bill',
-    amount: 23,
-    isSavings: false,
-    date: new Date(),
-  });
+export const createAsync = async (lineItem: LineItem): Promise<string> => {
+  const newLineItem = await fireStore
+    .collection(COLLECTION)
+    .withConverter(lineItemConverter)
+    .add(lineItem);
+
+  return newLineItem.id;
 };

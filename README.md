@@ -16,6 +16,7 @@ yarn install
 ## Run the project locally
 
 ```bash
+yarn build
 func host start
 ```
 

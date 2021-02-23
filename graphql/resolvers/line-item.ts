@@ -1,3 +1,4 @@
+import { LineItem } from './../models/line-item';
 import { IResolvers } from 'apollo-server-azure-functions';
 import { createAsync, getAsync } from '../repositories/line-item-repository';
 // import {
@@ -39,8 +40,13 @@ export const resolvers: IResolvers = {
     // },
   },
   Mutation: {
-    createLineItem: async (): Promise<void> => {
-      await createAsync();
+    createLineItem: async (
+      root: void,
+      args: {
+        lineItem: LineItem;
+      }
+    ): Promise<string> => {
+      return await createAsync(args.lineItem);
     },
     // upsertLineItem: async (
     //   root: void,

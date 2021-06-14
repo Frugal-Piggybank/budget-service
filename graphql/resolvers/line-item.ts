@@ -1,12 +1,11 @@
-import { LineItem } from './../models/line-item';
-import { IResolvers } from 'apollo-server-azure-functions';
-import { createAsync, getAsync } from '../repositories/line-item-repository';
-// import {
-//   getAsync,
-//   getByIdAsync,
-//   upsertAsync,
-//   deleteAsync,
-// } from "../../repositories/line-item-repository";
+import { LineItemDocument } from "../models/LineItem";
+import { IResolvers } from "apollo-server-azure-functions";
+import {
+  deleteAsync,
+  getAsync,
+  getByIdAsync,
+  upsertAsync,
+} from "../repositories/line-item";
 
 export const resolvers: IResolvers = {
   Query: {
@@ -19,51 +18,27 @@ export const resolvers: IResolvers = {
     //   const lineItems = await getAsync(userId, args);
     //   return lineItems;
     // },
-    lineItems: async (
-      root: void,
-      args: void
-      //   ctx: ApolloContext
-    ): Promise<any> => {
+    lineItems: async (root: void, args: void): Promise<LineItemDocument[]> => {
       const lineItems = await getAsync();
 
       return lineItems;
     },
-    // lineItem: async (
-    //   root: void,
-    //   args: { id: string },
-    //   ctx: ApolloContext
-    // ): Promise<LineItemDocument> => {
-    //   const userId = checkAuthentication(ctx);
-    //   const lineItem = await getByIdAsync(args.id);
-    //   if (!lineItem || lineItem.userId !== userId) ctx.res.status(404);
-    //   return lineItem;
-    // },
+    lineItem: async (
+      root: void,
+      args: { id: string }
+    ): Promise<LineItemDocument> => {
+      const lineItem = await getByIdAsync(args.id);
+
+      return lineItem;
+    },
   },
   Mutation: {
-    createLineItem: async (
+    upsertLineItem: async (
       root: void,
-      args: {
-        lineItem: LineItem;
-      }
-    ): Promise<string> => {
-      return await createAsync(args.lineItem);
+      args: { lineItem: LineItemDocument }
+    ): Promise<string> => upsertAsync(args.lineItem),
+    deleteLineItem: async (root: void, args: { id: string }): Promise<void> => {
+      await deleteAsync(args.id);
     },
-    // upsertLineItem: async (
-    //   root: void,
-    //   args: { lineItem: LineItemDocument },
-    //   ctx: ApolloContext
-    // ): Promise<LineItemDocument> => {
-    //   const userId = checkAuthentication(ctx);
-    //   return await upsertAsync(userId, args.lineItem);
-    // },
-    // deleteLineItem: async (
-    //   root: void,
-    //   args: { id: string },
-    //   ctx: ApolloContext
-    // ): Promise<boolean> => {
-    //   const userId = checkAuthentication(ctx);
-    //   const result = await deleteAsync(userId, args.id);
-    //   return result === 204;
-    // },
   },
 };

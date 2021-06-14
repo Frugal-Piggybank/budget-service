@@ -17,7 +17,7 @@ yarn install
 
 ```bash
 yarn build
-func host start
+yarn start
 ```
 
 Navigate to http://localhost:7071/graphql to perform GraphQL queries
